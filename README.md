@@ -25,3 +25,10 @@ This library does that confirmation. It draws from `node:crypto.randomBytes`, sc
 **Adversarial payloads.** If you request a very short random length (e.g. 2 characters) against a payload containing every possible 2-character combination, the generator will exhaust its attempt budget and throw. Raise `length` (default 32, ≈197 bits of entropy) for any real use.
 
 **Length cap.** RFC 2045 limits boundary values to 70 characters. If your prefix plus requested length exceeds that, the result is truncated to 70 characters. A prefix longer than 70 is truncated on its own.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
